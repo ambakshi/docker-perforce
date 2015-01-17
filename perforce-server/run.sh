@@ -28,6 +28,7 @@ fi
 
 if [ ! -e "$P4ROOT/init" ]; then
     runuser -l perforce -c "/opt/perforce/sbin/p4d -d $*"
+    sleep 10
     p4 passwd -O '' -P p4admin p4admin
     cat << EOF | p4 -P p4admin protect -i
     Protections:
@@ -38,6 +39,7 @@ EOF
     p4 -u swarm user -o | p4 -u swarm user -i
     p4 -u swarm passwd -P swarm
     p4 -P p4admin admin stop
+    sleep 5
     touch "$P4ROOT/init"
     chown perforce:perforce "$P4ROOT/init"
 fi
