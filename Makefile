@@ -1,5 +1,8 @@
 .PHONY: image clean tag push
-all: image
+all: id_rsa image
+perforce-git-fusion-image: perforce-git-fusion/id_rsa.pub
+perforce-git-fusion/id_rsa.pub: id_rsa
+	cp id_rsa.pub $@
 
 DOCKER_REPO=ambakshi
 IMAGES=perforce-base perforce-server perforce-git-fusion \
@@ -32,3 +35,6 @@ $(1)-clean:
 endef
 
 $(foreach image,$(IMAGES),$(eval $(call DOCKER_build,$(image))))
+
+id_rsa:
+	ssh-keygen -q -f id_rsa -N ""
