@@ -1,12 +1,21 @@
 .PHONY: image clean tag push
-all: id_rsa image
-perforce-git-fusion-image: perforce-git-fusion/id_rsa.pub
-perforce-git-fusion/id_rsa.pub: id_rsa
-	cp id_rsa.pub $@
 
 DOCKER_REPO=ambakshi
 IMAGES=perforce-base perforce-server perforce-git-fusion \
 	   perforce-swarm perforce-sampledepot
+
+all: id_rsa.pub image
+
+perforce-git-fusion-image: perforce-git-fusion/id_rsa.pub
+
+%/id_rsa.pub: id_rsa.pub
+	cp $< $@
+
+id_rsa:
+	ssh-keygen -q -f $@ -N ""
+
+id_rsa.pub: id_rsa
+	ssh-keygen -y -f $< > $@
 
 define DOCKER_build
 
@@ -36,5 +45,3 @@ endef
 
 $(foreach image,$(IMAGES),$(eval $(call DOCKER_build,$(image))))
 
-id_rsa:
-	ssh-keygen -q -f id_rsa -N ""
