@@ -1,12 +1,17 @@
 .PHONY: image clean tag push
 
 DOCKER_REPO=ambakshi
-IMAGES=perforce-base perforce-server perforce-git-fusion \
+IMAGES=perforce-base perforce-proxy perforce-server perforce-git-fusion \
 	   perforce-swarm perforce-sampledepot
 
-all: id_rsa.pub image
+all: image
 
-perforce-git-fusion-image: perforce-git-fusion/id_rsa.pub
+perforce-proxy-image: perforce-base-tag
+perforce-server-image: perforce-base-tag
+perforce-proxy-image: perforce-base
+perforce-git-fusion-image: perforce-server-tag
+perforce-sampledepot-image: perforce-server-tag
+perforce-swarm-image: perforce-base-tag
 
 %/id_rsa.pub: id_rsa.pub
 	cp $< $@
@@ -19,27 +24,19 @@ id_rsa.pub: id_rsa
 
 define DOCKER_build
 
-.PHONY: $(1) $(1)-image $(1)-tag $(1)-push $(1)-clean
+.PHONY: $(DOCKER_REPO)/$(1) $(1)-clean
 
-image: $(1)-image
-tag: $(1)-tag
-push: $(1)-push
+image: $(DOCKER_REPO)/$(1)
 clean: $(1)-clean
 
-$(1)-image:
+$(DOCKER_REPO)/$(1): $(1)/Dockerfile
 	@echo "===================="
-	@echo "Building $(1) ..."
-	@echo " --> docker build -t $(1) $(1)"
-	@docker build -t $(1) $(1)
-
-$(1)-tag:
-	docker tag -f $(1):latest $(DOCKER_REPO)/$(1):latest
-
-$(1)-push: $(1)-tag
-	docker push $(DOCKER_REPO)/$(1):latest
+	@echo "Building $(DOCKER_REPO)/$(1) ..."
+	@echo " --> docker build -t $(DOCKER_REPO)/$(1) $(1)"
+	@docker build -t $(DOCKER_REPO)/$(1) $(1)
 
 $(1)-clean:
-	docker rmi $(1)
+	docker rmi $(DOCKER_REPO)/$(1)
 
 endef
 
