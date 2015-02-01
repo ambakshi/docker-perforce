@@ -1,0 +1,12 @@
+#!/bin/bash
+# vi: set ft=sh:
+
+set -e
+. /etc/container_environment
+
+mkdir -m 0700 -p $P4ROOT
+if [ ! -e $P4SSLDIR ]; then
+    mkdir -m 0700 -p $P4SSLDIR
+    P4SSLDIR=$P4SSLDIR $P4D -Gc
+fi
+chown perforce:perforce $P4ROOT $P4SSLDIR $P4SSLDIR/*.txt

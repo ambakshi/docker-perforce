@@ -1,0 +1,57 @@
+#!/bin/bash
+# vi: set ft=sh:
+
+set -e
+
+# This is hardcoded in configure-perforce-serve.rsh :(
+P4PASSWD="${P4PASSWD:-pass12349ers!}"
+
+for DIR in $P4ROOT $P4SSLDIR; do
+    mkdir -m 0700 -p $DIR
+    chown perforce:perforce $DIR
+done
+
+if ! p4dctl list 2>/dev/null | grep -q $P4NAME; then
+    /opt/perforce/sbin/configure-perforce-server.sh $P4NAME -n -p $P4PORT -r $P4ROOT -u $P4USER -P "${P4PASSWD}"
+fi
+
+#if [[ $(ls $P4SSLDIR/* | wc -l) = 0 ]]; then
+#    $P4D -Gc
+#fi
+
+exec su -s /bin/sh -c 'exec "$0" "$@"' perforce -- /usr/sbin/p4d -r $P4ROOT -p $P4PORT
+
+##################################
+#############################
+#################################
+p4dctl start -t p4d $P4NAME
+
+touch ~perforce/.p4config
+chmod 0600 ~perforce/.p4config
+chown perforce:perforce ~perforce/.p4config
+cat > ~perforce/.p4config <<EOF
+P4USER=$P4USER
+P4PORT=$P4PORT
+P4PASSWD="$P4PASSWD"
+EOF
+
+p4 login <<EOF
+$P4PASSWD
+EOF
+
+## Load up the default tables
+p4 user -i < /root/p4-users.txt
+p4 group -i < /root/p4-groups.txt
+p4 protect -i < /root/p4-protect.txt
+
+echo "   P4USER=$P4USER (the admin user)"
+if [ -n "$WARN" ]; then
+    echo -e "\n***** WARNING: USING DEFAULT PASSWORD ******\n"
+    echo "Please change as soon as possible:"
+    echo "   P4PASSWD=$P4PASSWD"
+    echo -e "\n***** WARNING: USING DEFAULT PASSWORD ******\n"
+fi
+sleep 2
+
+# exec /usr/bin/p4web -U perforce -u $P4USER -b -p $P4PORT -P "$P4PASSWD" -w 8080
+
