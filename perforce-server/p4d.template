@@ -1,0 +1,24 @@
+#-------------------------------------------------------------------------------
+# Template p4dctl configuration file for Perforce server
+#-------------------------------------------------------------------------------
+
+p4d %NAME%
+{
+    Owner    =	perforce
+    Execute  =	/usr/local/sbin/p4d
+    Umask    =	077
+
+    # Enabled by default. 
+    Enabled  =	true
+
+    Environment
+    {
+        P4ROOT    =	%ROOT%
+        P4JOURNAL =	journal
+        P4PORT    =	%PORT%
+        P4SSLDIR  =	ssl
+        PATH      =	/bin:/usr/bin:/usr/local/bin:/opt/perforce/bin:/opt/perforce/sbin
+    }
+
+}
+
