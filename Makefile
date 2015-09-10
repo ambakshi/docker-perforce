@@ -3,7 +3,7 @@ all: image
 
 DOCKER_REPO=ambakshi
 IMAGES=perforce-base perforce-proxy perforce-server perforce-git-fusion \
-	   perforce-swarm perforce-sampledepot
+	   perforce-swarm perforce-sampledepot perforce-p4web
 
 .PHONY:  $(IMAGES)
 
@@ -13,6 +13,7 @@ perforce-proxy: perforce-base
 perforce-git-fusion: perforce-server
 perforce-sampledepot: perforce-server
 perforce-swarm: perforce-base
+perforce-p4web: perforce-base
 
 %/id_rsa.pub: id_rsa.pub
 	cp $< $@
