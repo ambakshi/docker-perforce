@@ -1,7 +1,7 @@
 FROM ambakshi/perforce-base
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-ENV SWARM_VERSION 2014.4
+ENV SWARM_VERSION 2015.3
 RUN yum install -y perforce-swarm-$SWARM_VERSION perforce-swarm-triggers-$SWARM_VERSION
 ## RUN yum install -y php-pecl-imagick
 
