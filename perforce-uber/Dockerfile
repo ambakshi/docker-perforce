@@ -6,9 +6,9 @@ RUN curl -fsSL http://package.perforce.com/perforce.pubkey | apt-key add -
 RUN echo 'deb http://package.perforce.com/apt/ubuntu precise release' > /etc/apt/sources.list.d/perforce.sources.list
 RUN apt-get update -y -q
 
-RUN apt-get install -y -q perforce-cli perforce-server
-RUN apt-get install -y -q perforce-git-fusion perforce-git-fusion-trigger
-RUN apt-get install -y -q perforce-swarm perforce-swarm-triggers
+RUN apt-get install -y -q helix-cli helix-p4d helix-proxy
+RUN apt-get install -y -q helix-git-fusion helix-git-fusion-trigger
+RUN apt-get install -y -q helix-swarm helix-swarm-triggers
 
 ## If you want to run a new version of perforce than what is
 ## available in the RPMs, uncomment these lines.

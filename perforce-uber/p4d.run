@@ -3,7 +3,7 @@
 
 set -e
 
-# This is hardcoded in configure-perforce-serve.rsh :(
+# This is hardcoded in configure-helix-p4d.rsh :(
 P4PASSWD="${P4PASSWD:-pass12349ers!}"
 
 for DIR in $P4ROOT $P4SSLDIR; do
@@ -12,7 +12,7 @@ for DIR in $P4ROOT $P4SSLDIR; do
 done
 
 if ! p4dctl list 2>/dev/null | grep -q $P4NAME; then
-    /opt/perforce/sbin/configure-perforce-server.sh $P4NAME -n -p $P4PORT -r $P4ROOT -u $P4USER -P "${P4PASSWD}"
+    /opt/perforce/sbin/configure-helix-p4dr.sh $P4NAME -n -p $P4PORT -r $P4ROOT -u $P4USER -P "${P4PASSWD}"
 fi
 
 #if [[ $(ls $P4SSLDIR/* | wc -l) = 0 ]]; then

@@ -11,7 +11,7 @@ if [ -z "$P4PASSWD" ]; then
     P4PASSWD="pass12349ers!"
 fi
 
-# This is hardcoded in configure-perforce-serve.rsh :(
+# This is hardcoded in configure-helix-p4d.sh :(
 P4SSLDIR="$P4ROOT/ssl"
 
 for DIR in $P4ROOT $P4SSLDIR; do
@@ -20,7 +20,7 @@ for DIR in $P4ROOT $P4SSLDIR; do
 done
 
 if ! p4dctl list 2>/dev/null | grep -q $NAME; then
-    /opt/perforce/sbin/configure-perforce-server.sh $NAME -n -p $P4PORT -r $P4ROOT -u $P4USER -P "${P4PASSWD}"
+    /opt/perforce/sbin/configure-helix-p4d.sh $NAME -n -p $P4PORT -r $P4ROOT -u $P4USER -P "${P4PASSWD}"
 fi
 
 p4dctl start -t p4d $NAME

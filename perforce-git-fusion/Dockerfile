@@ -1,7 +1,10 @@
 FROM ambakshi/perforce-server
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-RUN yum install -y perforce-git-fusion
+ENV FUSION_VERSION 2015.3
+ENV REFRESHED_AT 2015-11-15
+
+RUN yum install -y helix-git-fusion-$FUSION_VERSION helix-git-fusion-3rdparty-git helix-git-fusion-trigger
 RUN yum install -y  openssh-server
 #RUN rpm -Uvh http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-13.ius.centos6.noarch.rpm
 #RUN yum install -y  openssh-server python33 python33-tools python33-devel python33-libs
