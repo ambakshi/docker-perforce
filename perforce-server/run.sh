@@ -5,6 +5,16 @@ set -e
 service crond start
 service rsyslog start
 
+if [ ! -d /data/etc ]; then
+	echo First time installation, copying configuration from /etc/perforce to /data/etc and relinking
+	mkdir -p /data/etc
+	cp -r /etc/perforce/* /data/etc/
+fi 
+
+mv /etc/perforce /etc/perforce.orig
+ln -s /data/etc /etc/perforce	
+
+
 NAME="${NAME:-$HOSTNAME}"
 if [ -z "$P4PASSWD" ]; then
     WARN=1
