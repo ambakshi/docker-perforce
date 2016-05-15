@@ -1,0 +1,4 @@
+P4CONFIG=.p4config
+P4PORT=1666
+P4USER=p4admin
+P4PASSWD=pass12349ers!

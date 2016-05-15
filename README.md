@@ -30,6 +30,20 @@ a server up and running quickly.
     $ make -C
 
 
+### docker-compose
+
+Using docker-compose it is much simpler to setup a working environment. Modify the
+`docker-compose.yml` and the supplied `envfile` to customize your site. Once done,
+run:
+
+    $ make
+    $ docker-compose up -d perforce    # for p4d server
+    $ docker-compose up -d gfperforce  # for p4d + git-fusion server
+
+The perforce-git-fusion image is setup to run its own p4d server. If you prefer to
+run a seperate git+ssh server and connect to a running p4d instance, please open a
+PR.
+
 ## Contributing
 
 1. Fork it!
@@ -41,6 +55,8 @@ a server up and running quickly.
 ## History
 
 2014/12/24  - initial version
+2016/05/14  - fixed perforce-git-fusion
+2016/05/15  - added docker-compose support
 
 ## Credits
 

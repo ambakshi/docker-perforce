@@ -1,0 +1,22 @@
+perforce:
+    build: perforce-server
+    hostname: perforce
+    volumes:
+        - p4depot:/data
+    ports:
+        - "1666:1666"
+    env_file:
+        - ./envfile
+
+gfperforce:
+    build: perforce-git-fusion
+    hostname: perforce
+    ports:
+        - "1666:1666"
+        - "2222:22"
+    env_file:
+        - ./envfile
+    environment:
+        - NAME=gfp4depot
+    volumes:
+        - gfp4depot:/data
