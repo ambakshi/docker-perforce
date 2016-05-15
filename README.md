@@ -18,7 +18,7 @@ Build images (the Makefile's default target):
 Tag your images with your repo username and push the images to the Docker registry:
 
     $ docker login
-    $ DOCKER_REPO=ambakshi make image tag push
+    $ DOCKER_REPO=ambakshi make image push
 
 ## Usage
 

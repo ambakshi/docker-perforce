@@ -1,7 +1,7 @@
 .PHONY: image clean push dcbuild
 all: image dcbuild
 
-DOCKER_REPO=ambakshi
+DOCKER_REPO ?= ambakshi
 IMAGES=perforce-base perforce-proxy perforce-server perforce-git-fusion \
 	   perforce-swarm perforce-sampledepot perforce-p4web
 
@@ -38,6 +38,7 @@ define DOCKER_build
 
 image: $(1)
 clean: $(1)-clean
+push: $(1)-push
 
 $(1): $(1)/Dockerfile
 	@echo "===================="
@@ -47,6 +48,9 @@ $(1): $(1)/Dockerfile
 
 $(1)-clean:
 	-docker rmi $(DOCKER_REPO)/$(1) 2>/dev/null
+
+$(1)-push: $(1)
+	docker push $(DOCKER_REPO)/$(1)
 
 endef
 
