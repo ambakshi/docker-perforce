@@ -1,8 +1,7 @@
-FROM centos:centos6
+FROM centos:6
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-ENV P4D_VERSION 2016.1
-ENV REFRESHED_AT 2016-05-14
+ENV REFRESHED_AT 2016-06-25
 
 RUN echo -ne '[perforce]\nname=Perforce\nbaseurl=http://package.perforce.com/yum/rhel/6/x86_64\nenabled=1\ngpgcheck=1\n' > /etc/yum.repos.d/peforce.repo
 RUN rpm --import http://package.perforce.com/perforce.pubkey

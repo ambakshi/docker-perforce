@@ -1,7 +1,7 @@
 FROM ambakshi/perforce-base
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-RUN yum install -y helix-p4d-${P4D_VERSION} helix-cli
+RUN yum install -y helix-p4d helix-cli
 
 EXPOSE 1666
 ENV NAME p4depot

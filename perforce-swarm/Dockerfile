@@ -1,10 +1,9 @@
 FROM ambakshi/perforce-base
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-ENV SWARM_VERSION 2016.1
-ENV REFRESHED_AT 2016-05-14
+ENV REFRESHED_AT 2016-06-25
 
-RUN yum install -y helix-swarm-$SWARM_VERSION helix-swarm-triggers
+RUN yum install -y helix-swarm helix-swarm-triggers
 ## RUN yum install -y php-pecl-imagick
 
 ENV P4PORT perforce:1666

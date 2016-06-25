@@ -20,7 +20,7 @@ dcbuild: image
 
 rebuild:
 	$(MAKE) clean
-	docker pull centos:centos6
+	docker pull centos:6
 	$(MAKE) all DOCKER_BUILD_ARGS='--no-cache'
 
 %/id_rsa.pub: id_rsa.pub
