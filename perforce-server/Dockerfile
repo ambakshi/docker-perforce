@@ -9,7 +9,7 @@ ENV P4CONFIG .p4config
 ENV DATAVOLUME /data
 ENV P4PORT 1666
 ENV P4USER p4admin
-VOLUME $DATAVOLUME
+VOLUME ["$DATAVOLUME"]
 
 ADD ./p4-users.txt /root/
 ADD ./p4-groups.txt /root/

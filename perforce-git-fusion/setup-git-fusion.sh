@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bash
+#!/bin/bash
 set -e
 
 if [ -z "$GFP4PASSWD" ]; then
@@ -10,8 +10,10 @@ SSH_HOST_KEYS="${SSH_HOST_KEYS:-$GFP4ROOT/ssh_host_keys}"
 
 if ! test -e "$SSH_HOST_KEYS"; then
     if ! test -e /etc/ssh/ssh_host_rsa_key; then
-        service sshd start
-        service sshd stop
+        ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
+        ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
+        ssh-keygen -f /etc/ssh/ssh_host_ecdsa_key -N '' -t ecdsa
+        ssh-keygen -f /etc/ssh/ssh_host_ed25519_key -N '' -t ed25519
     fi
     mkdir -p "$SSH_HOST_KEYS"
     cp /etc/ssh/ssh_host_* "$SSH_HOST_KEYS"

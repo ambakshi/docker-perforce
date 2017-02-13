@@ -1,12 +1,12 @@
 #!/usr/bin/with-contenv bash
 set -e
 
-service crond start
-service rsyslog start
+#service crond start
+#service rsyslog start
 
 export NAME="${NAME:-p4depot}"
 
-/usr/local/bin/setup-perforce.sh
+bash -x /usr/local/bin/setup-perforce.sh
 
 sleep 2
 

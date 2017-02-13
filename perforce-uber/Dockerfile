@@ -4,18 +4,7 @@ MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 RUN curl -fsSL http://package.perforce.com/perforce.pubkey | apt-key add - 
 RUN echo 'deb http://package.perforce.com/apt/ubuntu precise release' > /etc/apt/sources.list.d/perforce.sources.list
-RUN apt-get update -y -q
-
-RUN apt-get install -y -q helix-cli helix-p4d helix-proxy
-RUN apt-get install -y -q helix-git-fusion helix-git-fusion-trigger
-RUN apt-get install -y -q helix-swarm helix-swarm-triggers
-
-## If you want to run a new version of perforce than what is
-## available in the RPMs, uncomment these lines.
-#RUN curl -fsSL -O http://cdist2.perforce.com/perforce/r15.1/bin.linux26x86_64/p4d && chmod +x p4d && mv p4d /opt/perforce/sbin/p4d-r15.1b
-#RUN curl -fsSL -O http://cdist2.perforce.com/perforce/r15.1/bin.linux26x86_64/p4 && chmod +x p4 && mv p4 /opt/perforce/bin/p4-r15.1b
-#RUN ln -sfn /opt/perforce/sbin/p4d-r15.1b /usr/sbin/p4d
-#RUN ln -sfn /opt/perforce/bin/p4-r15.1b /usr/bin/p4
+RUN apt-get update -yq && apt-get install -yqq --no-install-recommends helix-cli helix-p4d helix-proxy helix-git-fusion helix-git-fusion-trigger helix-swarm helix-swarm-triggers
 
 ## Enable ssh
 RUN rm -f /etc/service/sshd/down
@@ -27,7 +16,7 @@ RUN gpasswd -a perforce docker_env
 
 EXPOSE 22 80 443 1666 1667 8080
 ENV P4NAME=p4depot P4ROOT=/data/p4depot P4SSLDIR=/data/p4depot/ssl P4PORT=ssl:1666 P4USER=perforce
-VOLUME /data
+VOLUME ["/data"]
 
 ADD ./p4-users.txt /root/
 ADD ./p4-groups.txt /root/

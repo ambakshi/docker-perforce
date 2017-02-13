@@ -1,7 +1,7 @@
 FROM ambakshi/perforce-base
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-ENV REFRESHED_AT 2016-06-25
+ENV REFRESHED_AT 2017-02-07
 
 RUN yum install -y helix-swarm helix-swarm-triggers
 ## RUN yum install -y php-pecl-imagick

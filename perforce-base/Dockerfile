@@ -1,14 +1,32 @@
-FROM centos:6
+FROM centos:7
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-ENV REFRESHED_AT 2016-06-25
+ENV REFRESHED_AT 2017-02-07
 
-RUN echo -ne '[perforce]\nname=Perforce\nbaseurl=http://package.perforce.com/yum/rhel/6/x86_64\nenabled=1\ngpgcheck=1\n' > /etc/yum.repos.d/peforce.repo
+# See: https://hub.docker.com/_/centos/
+ENV container docker
+RUN cd /lib/systemd/system/sysinit.target.wants/ && \
+	for i in *; do \
+		[ $i == systemd-tmpfiles-setup.service ] || rm -vf $i ; \
+	done ; \
+	rm -vf /lib/systemd/system/multi-user.target.wants/* && \
+	rm -vf /etc/systemd/system/*.wants/* && \
+	rm -vf /lib/systemd/system/local-fs.target.wants/* && \
+	rm -vf /lib/systemd/system/sockets.target.wants/*udev* && \
+	rm -vf /lib/systemd/system/sockets.target.wants/*initctl* && \
+	rm -vf /lib/systemd/system/basic.target.wants/* && \
+	rm -vf /lib/systemd/system/anaconda.target.wants/* && \
+	mkdir -p /etc/selinux/targeted/contexts/ && \
+	echo '<busconfig><selinux></selinux></busconfig>' > /etc/selinux/targeted/contexts/dbus_contexts
+
+RUN echo -ne '[perforce]\nname=Perforce\nbaseurl=http://package.perforce.com/yum/rhel/7/x86_64\nenabled=1\ngpgcheck=1\n' > /etc/yum.repos.d/peforce.repo
 RUN rpm --import http://package.perforce.com/perforce.pubkey
-RUN yum clean all && yum update -y
 RUN yum install -y epel-release cronie-anacron tar gzip curl
-RUN yum clean all && yum update -y && yum makecache
-RUN curl -sSL https://github.com/just-containers/s6-overlay/releases/download/v1.17.2.0/s6-overlay-amd64.tar.gz | tar zxf - -C /
+RUN mkdir -p /tmp/s6 && \
+     cd /tmp/s6 && \
+     curl -sSL https://github.com/just-containers/s6-overlay/releases/download/v1.17.2.0/s6-overlay-amd64.tar.gz | tar zxf - && \
+     tar cf - init usr etc | (cd / && tar xf -) && \
+     (cd /tmp/s6/bin && tar cf - .) | (cd /bin && tar xf -) && \
+     cd / && rm -rf /tmp/s6
 RUN curl -sSL https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64 > /usr/bin/gosu && chmod +x /usr/bin/gosu
-
 ENTRYPOINT ["/init"]
