@@ -1,0 +1,16 @@
+# ~/.profile: executed by Bourne-compatible login shells.
+
+# Source .bashrc
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+
+# Setup P4
+export P4CONFIG=.p4config
+export P4PORT=perforce:1666
+export P4USER=p4admin
+export P4PASSWD=pass12349ers!
+export P4CLIENT=pts4vi
+export P4EDITOR=vim

@@ -1,11 +1,20 @@
 .PHONY: image clean push
 all: image
 
-DOCKER_REPO ?= ambakshi
+#DOCKER_REPO ?= ambakshi
+DOCKER_REPO=pts
 IMAGES=perforce-base perforce-proxy perforce-server perforce-git-fusion \
-	   perforce-swarm perforce-sampledepot perforce-p4web
+	   perforce-swarm perforce-sampledepot perforce-p4web perforce-client
+NETWORK=perforce
 
 .PHONY:  $(IMAGES)
+
+clean:
+	docker network rm $(NETWORK)
+
+network:
+	docker network inspect $(NETWORK) >/dev/null 2>&1 || \
+		docker network create --driver bridge $(NETWORK)
 
 perforce-proxy: perforce-base
 perforce-server: perforce-base
@@ -14,8 +23,9 @@ perforce-git-fusion: perforce-server
 perforce-sampledepot: perforce-server
 perforce-swarm: perforce-base
 perforce-p4web: perforce-base
+perforce-client: network
 
-rebuild:
+rebuild: network
 	$(MAKE) clean
 	docker pull centos:7
 	$(MAKE) all DOCKER_BUILD_ARGS='--no-cache'
@@ -47,4 +57,3 @@ $(1)-clean:
 endef
 
 $(foreach image,$(IMAGES),$(eval $(call DOCKER_build,$(image))))
-
