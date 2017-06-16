@@ -1,0 +1,48 @@
+# A Perforce Group Specification.
+#
+#  Group:       The name of the group.
+#  MaxResults:  Limits the rows (unless 'unlimited' or 'unset') any one
+#               operation can return to the client.
+#               See 'p4 help maxresults'.
+#  MaxScanRows: Limits the rows (unless 'unlimited' or 'unset') any one
+#               operation can scan from any one database table.
+#               See 'p4 help maxresults'.
+#  MaxLockTime: Limits the time (in milliseconds, unless 'unlimited' or
+#               'unset') any one operation can lock any database table when
+#               scanning data. See 'p4 help maxresults'.
+#  Timeout:     A time (in seconds, unless 'unlimited' or 'unset')
+#               which determines how long a 'p4 login'
+#               session ticket remains valid (default is 12 hours).
+#  PasswordTimeout:
+#               A time (in seconds, unless 'unlimited' or 'unset')
+#               which determines how long a 'p4 password'
+#               password remains valid (default is unset).
+#  LdapConfig:  The LDAP configuration to use when populating the group's
+#               user list from an LDAP query. See 'p4 help ldap'.
+#  LdapSearchQuery:
+#               The LDAP query used to identify the members of the group.
+#  LdapUserAttribute:
+#               The LDAP attribute that represents the user's username.
+#  Subgroups:   Other groups automatically included in this group.
+#  Owners:      Users allowed to change this group without requiring super
+#               access permission.
+#  Users:       The users in the group.  One per line.
+
+Group:	p4users
+
+MaxResults:	unset
+
+MaxScanRows:	unset
+
+MaxLockTime:	unset
+
+Timeout:	43200
+
+PasswordTimeout:	unset
+
+Subgroups:
+
+Owners:
+
+Users:
+	jdoe

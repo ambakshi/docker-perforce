@@ -1,0 +1,57 @@
+# Perforce Protections Specification.
+#
+#  Each line contains a protection mode, a group/user indicator, the
+#  group/user name, client host id and a depot file path pattern.
+#  A user gets the highest privilege granted on any line.
+#
+#  Mode:        The permission level or right being granted or denied.  Each
+#               permission level includes all the permissions above it,
+#               except for 'review'.  Each permission right only includes
+#               the specific right and not all the lesser rights. Modes
+#               preceded by '=' are rights; all other modes are levels.
+#
+#               list   - users can see names but not contents of files;
+#                        users can see all non-file related metadata
+#                        (clients, users, changelists, jobs, etc.)
+#
+#               read   - users can sync, diff, and print files
+#
+#               open   - users can add, edit, delete, and integrate files
+#
+#               write  - users can submit open files
+#
+#               admin  - permits those administrative commands and command
+#                        options that don't affect the server's security
+#
+#               super  - allows access to the 'p4 protect' command
+#
+#               review - allows access to the 'p4 review' command; implies
+#                        read access
+#
+#               =read  - if this right is denied, users cannot sync, diff,
+#                        or print files
+#
+#               =branch - if this right is denied, users are not permitted
+#                         to use files as a source for 'p4 integrate'
+#
+#               =open   - if this right is denied, users cannot open files
+#                         (add, edit, delete, integrate)
+#
+#               =write  - if this right is denied, users cannot submit open
+#                         files
+#
+#  Group/User indicator: either 'group' or 'user'.
+#
+#  Name:        A Perforce group or user name; may be wildcarded.
+#
+#  Host:        The IP address of a client host; may be wildcarded, or
+#               may instead use CIDR syntax, e.g. 172.16.0.0/16 would match
+#               all IPv4 addresses which start with 172.16.
+#
+#  Path:        The part of the depot being granted access.
+
+Protections:
+	write group p4users * //...
+	super group p4admins * //...
+	super user p4admin * //...
+
