@@ -1,6 +1,6 @@
 .PHONY: all build run
 
-IMAGE=pts/perforce-client
+IMAGE=pts/helix-client
 NETWORK=perforce
 NAME=p4
 HOST=p4.c7-titan.localdomain
