@@ -23,12 +23,20 @@ fi
 P4SSLDIR="$P4ROOT/ssl"
 
 for DIR in $P4ROOT $P4SSLDIR; do
-    mkdir -m 0700 -p $DIR
-    chown perforce:perforce $DIR
+    if [ ! -d $DIR ]; then
+      mkdir -m 0700 -p $DIR
+    else
+      chmod 0700 $DIR
+    fi
+    chown -R perforce:perforce $DIR
 done
 
 if ! p4dctl list 2>/dev/null | grep -q $NAME; then
     /opt/perforce/sbin/configure-helix-p4d.sh $NAME -n -p $P4PORT -r $P4ROOT -u $P4USER -P "${P4PASSWD}"
+fi
+
+if ! p4dctl status -t p4d p4depot >/dev/null; then
+  p4dctl start -t p4d p4depot
 fi
 
 if echo "$P4PORT" | grep -q '^ssl:'; then

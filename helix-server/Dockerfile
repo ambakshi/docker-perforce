@@ -20,4 +20,4 @@ ADD ./p4-protect.txt /root/
 ADD ./setup-perforce.sh /usr/local/bin/
 ADD ./run.sh /
 
-CMD ["/bin/bash"]
+CMD ["/run.sh"]
