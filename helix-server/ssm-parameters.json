@@ -1,0 +1,37 @@
+{
+  "Parameters": [
+    {
+      "Type": "String",
+      "Name": "com.virtualincision.p4d.data-volume",
+      "Description": "Volume/Path to store config and data",
+      "Value": "/data",
+      "Overwrite": true
+    },{
+      "Type": "String",
+      "Name": "com.virtualincision.p4d.service-name",
+      "Description": "Name of the primary Helix Depot",
+      "Value": "p4depot",
+      "Overwrite": true
+    },{
+      "Type": "String",
+      "Name": "com.virtualincision.p4d.port",
+      "Description": "TCP Port for the Helix Server to listen on",
+      "Value": "1666",
+      "Overwrite": true
+    },{
+      "Type": "SecureString",
+      "KeyId": "alias/aws/ssm",
+      "Name": "com.virtualincision.p4d.admin.user",
+      "Description": "Username of the Root Admin for the Helix Server",
+      "Value": "p4admin",
+      "Overwrite": true
+    },{
+      "Type": "SecureString",
+      "KeyId": "alias/aws/ssm",
+      "Name": "com.virtualincision.p4d.admin.password",
+      "Description": "Password for the Root Admin of the Helix Server",
+      "Value": "pass12349ers!",
+      "Overwrite": true
+    }
+  ]
+}

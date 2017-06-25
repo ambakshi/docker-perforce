@@ -28,21 +28,14 @@
 #               access permission.
 #  Users:       The users in the group.  One per line.
 
+# Regular users group
 Group:	p4users
-
 MaxResults:	unset
-
 MaxScanRows:	unset
-
 MaxLockTime:	unset
-
 Timeout:	43200
-
 PasswordTimeout:	unset
-
 Subgroups:
-
 Owners:
-
 Users:
 	jdoe

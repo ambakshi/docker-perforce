@@ -1,0 +1,4 @@
+# Regular user
+User:	jdoe
+Email:	jdoe@perforce
+FullName:	John Doe

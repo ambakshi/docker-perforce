@@ -1,0 +1,11 @@
+# Admin group
+Group: p4admins
+MaxResults:	unset
+MaxScanRows:	unset
+MaxLockTime:	unset
+Timeout:	43200
+PasswordTimeout:	unset
+Subgroups:
+Owners:
+Users:
+	p4admin

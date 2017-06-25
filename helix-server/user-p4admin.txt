@@ -14,12 +14,5 @@
 #  Reviews:     Listing of depot files to be reviewed by user.
 
 User:	p4admin
-
 Email:	p4admin@perforce
-
-Update:	2015/02/01 13:38:29
-
-Access:	2015/02/01 13:51:09
-
 FullName:	Perforce Admin
-
