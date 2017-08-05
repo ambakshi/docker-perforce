@@ -19,7 +19,7 @@ RUN cd /lib/systemd/system/sysinit.target.wants/ && \
 	mkdir -p /etc/selinux/targeted/contexts/ && \
 	echo '<busconfig><selinux></selinux></busconfig>' > /etc/selinux/targeted/contexts/dbus_contexts
 
-RUN echo -ne '[perforce]\nname=Perforce\nbaseurl=http://package.perforce.com/yum/rhel/7/x86_64\nenabled=1\ngpgcheck=1\n' > /etc/yum.repos.d/peforce.repo
+RUN echo -ne '[perforce]\nname=Perforce\nbaseurl=http://package.perforce.com/yum/rhel/7/x86_64\nenabled=1\ngpgcheck=1\n' > /etc/yum.repos.d/perforce.repo
 RUN rpm --import http://package.perforce.com/perforce.pubkey
 RUN yum install -y epel-release cronie-anacron tar gzip curl
 RUN mkdir -p /tmp/s6 && \
