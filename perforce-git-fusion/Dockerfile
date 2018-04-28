@@ -1,8 +1,6 @@
 FROM ambakshi/perforce-server
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-ENV REFRESHED_AT 2017-02-07
-
 RUN yum install -y helix-git-fusion helix-git-fusion-3rdparty-git helix-git-fusion-trigger openssh-server
 
 RUN sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd
