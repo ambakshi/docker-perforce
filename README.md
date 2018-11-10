@@ -7,6 +7,8 @@ A collection of [Perforce](http://perforce.com) docker images:
 - Perforce Git Fusion
 - Perforce Swarm
 
+![Docker Pulls](https://img.shields.io/docker/pulls/mashape/kong.svg)
+
 ## Installation
 
 All operations on the images and repositories are encapsulated in Makefiles.

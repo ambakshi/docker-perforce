@@ -1,7 +1,6 @@
-FROM centos:7.6.1810
+ARG P4_BASEIMAGE=centos@sha256:a799dd8a2ded4a83484bbae769d97655392b3f86533ceb7dd96bbac929809f3c
+FROM $P4_BASEIMAGE
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
-
-ENV REFRESHED_AT 2019-05-01
 
 ENV container docker
 
@@ -20,19 +19,22 @@ RUN cd /lib/systemd/system/sysinit.target.wants/ && \
 	mkdir -p /etc/selinux/targeted/contexts/ && \
 	echo '<busconfig><selinux></selinux></busconfig>' > /etc/selinux/targeted/contexts/dbus_contexts
 
-RUN yum install -y epel-release cronie-anacron tar gzip curl openssl && \
-    yum clean all && \
+ARG GOSU_VERSION=1.11
+ARG S6_OVERLAY_VERSION=1.22.1.0
+ARG TINI_VERSION=0.18.0
+ARG SYSTEMCTL_GITSHA1=73b5aff2ba6abfd254d236f1df22ff4971d44660
+
+RUN sed -ir '/\[updates\].*/a enabled=1' /etc/yum.repos.d/CentOS-Base.repo && \
+    yum install -y epel-release cronie-anacron tar gzip curl openssl which sudo initscripts sysvinit at && \
+    echo -ne '[perforce]\nname=Perforce\nbaseurl=http://package.perforce.com/yum/rhel/7/x86_64\nenabled=1\ngpgcheck=1\n' > /etc/yum.repos.d/perforce.repo && \
+    rpm --import https://package.perforce.com/perforce.pubkey && \
+    yum clean all --enablerepo='*' && \
     rm -rf /var/cache/yum
 
-RUN mkdir -p /tmp/s6 && \
-    cd /tmp/s6 && \
-    curl -fsSL https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-amd64.tar.gz | tar zxf - && \
-    tar cf - init usr etc | (cd / && tar xf -) && \
-    (cd /tmp/s6/bin && tar cf - .) | (cd /bin && tar xf -) && \
-    cd / && rm -rf /tmp/s6 && \
-    curl -fsSL https://github.com/tianon/gosu/releases/download/1.11/gosu-amd64 > /usr/bin/gosu && chmod +x /usr/bin/gosu
-
-RUN echo -ne '[perforce]\nname=Perforce\nbaseurl=http://package.perforce.com/yum/rhel/7/x86_64\nenabled=1\ngpgcheck=1\n' > /etc/yum.repos.d/perforce.repo && \
-    rpm --import http://package.perforce.com/perforce.pubkey
+RUN curl -fsSL https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/${SYSTEMCTL_GITSHA1}/files/docker/systemctl.py -o /bin/systemctl && \
+    curl -fsSL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar zxf - -C / --keep-directory-symlink --exclude ./usr/bin/execlineb && \
+    curl -fsSL https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd64 -o /usr/bin/tini && \
+    curl -fsSL https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 -o /usr/bin/gosu && \
+    chmod +x /bin/systemctl /usr/bin/gosu /usr/bin/tini
 
 ENTRYPOINT ["/init"]

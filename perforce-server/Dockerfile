@@ -1,7 +1,14 @@
 FROM ambakshi/perforce-base
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-RUN yum install -y helix-p4d helix-cli
+ARG P4_VERSION
+
+RUN yum clean all --enablerepo='*' \
+    && yum clean metadata --enablerepo='*' \
+    && yum install --enablerepo=perforce -y helix-p4d-20${P4_VERSION} helix-cli-20${P4_VERSION} \
+    && yum clean all --enablerepo='*' \
+    && rm -rf /var/cache/yum
+
 
 EXPOSE 1666
 ENV NAME p4depot
