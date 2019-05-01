@@ -10,4 +10,4 @@ bash -x /usr/local/bin/setup-perforce.sh
 
 sleep 2
 
-exec /usr/bin/tail --pid=$(cat /var/run/p4d.$NAME.pid) -f "$DATAVOLUME/$NAME/log"
+exec /usr/bin/tail --pid=$(cat /var/run/p4d.$NAME.pid) -f "$DATAVOLUME/$NAME/logs/log"
