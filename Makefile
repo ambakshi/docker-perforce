@@ -1,9 +1,12 @@
 .PHONY: image clean push
 all: image
 
+-include local.mk
+
 DOCKER_REPO ?= ambakshi
 IMAGES=perforce-base perforce-proxy perforce-server perforce-git-fusion \
 	   perforce-swarm perforce-sampledepot perforce-p4web
+DOCKER_BUILD_ARGS = --build-arg http_proxy=$(http_proxy)
 
 .PHONY:  $(IMAGES)
 

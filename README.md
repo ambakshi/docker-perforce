@@ -66,7 +66,7 @@ Download a local p4 client for your OS from [Perforce's repo](http://cdist2.perf
 and run:
 
     $ export P4CONFIG=.p4config
-    
+
     $ p4 info
     User name: p4admin
     Client name: titan7
@@ -93,10 +93,10 @@ Create a new client:
     Enter password:
     User p4admin logged in.
     Client myclient saved.
-    
+
     $ p4 -c myclient add README.md
     //depot/README.md#1 - opened for add
-    
+
     $ p4 -c myclient submit
 
 ## Contributing
@@ -109,10 +109,28 @@ Create a new client:
 
 ## History
 
-2014/12/24  - initial version
-2016/05/14  - fixed perforce-git-fusion
-2016/05/15  - added docker-compose support
-2017/02/07  - switched default base image to centos7, and upgraded p4 to 2016.2
+2019/05/01:
+    - Upgrade to P4 2018.2
+    - Upgrade gosu to 1.11
+    - Upgrade s6 to 1.22.1.0
+    - Remove various calls to `bash -x` that caused P4PASSWD to be printed
+    - Pulled in fix `pull request #10 from nathanperkins/fix-log-location`
+    - Use `tail -F` instead of -f, so we follow log rotation
+    - Pass http_proxy as an optional docker build arg
+    - Makefile loads an optional `local.mk` where you can configure (amongst other things) `http_proxy`
+
+2017/02/07:
+    - Upgrade to P4 to 2016.2
+    - Switched default base image to centos7
+
+2016/05/15:
+    - Added docker-compose support
+
+2016/05/14:
+    - Fixed perforce-git-fusion
+
+2014/12/24:
+    - Initial version
 
 ## Credits
 
