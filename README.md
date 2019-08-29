@@ -67,7 +67,7 @@ you'll need to modify the `docker-compose.yml` file accordingly:
 Download a local p4 client for your OS from [Perforce's repo](http://cdist2.perforce.com/perforce/r16.2/),
 and run:
 
-    $ export P4CONFIG=.p4config
+    $ export P4CONFIG=envfile
 
     $ p4 info
     User name: p4admin
