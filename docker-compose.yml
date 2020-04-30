@@ -1,33 +1,54 @@
 ---
-version: '2'
+version: '3.7'
+
 services:
   perforce:
-    image: ambakshi/perforce-server
+    image: ambakshi/perforce-server:latest
+    container_name: perforce
     hostname: perforce
+    tty: true
     volumes:
       - p4depot:/data
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
     ports:
       - "1666:1666"
-    env_file:
-      - ./envfile
-
-  gfperforce:
-    image: ambakshi/perforce-git-fusion
-    hostname: perforce
-    ports:
-      - "1666:1666"
-      - "2222:22"
-    env_file:
-      - ./envfile
+    tmpfs:
+      - /run
+      - /run/lock
     environment:
-      - NAME=gfp4depot
+      - container=docker
+    env_file:
+      - ./envfile
+    networks:
+      - p4net
+
+  swarm:
+    image: ambakshi/perforce-swarm:latest
+    container_name: swarm
+    hostname: swarm
+    depends_on:
+      - perforce
+    ports:
+      - "8080:80"
+      - "1443:443"
     volumes:
-      - gfp4depot:/data
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    tmpfs:
+      - /run
+      - /run/lock
+    environment:
+      - P4PORT=perforce:1666
+      - container=docker
+    env_file:
+      - ./envfile
+    networks:
+      - p4net
 
 volumes:
   p4depot:
     external: true
-  gfp4depot:
-    external: true
 
+networks:
+  p4net:
+    external: true
 # vim: sts=2:ts=2:sw=2:et:ft=yaml:

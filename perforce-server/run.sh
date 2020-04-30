@@ -1,10 +1,12 @@
-#!/usr/bin/with-contenv bash
+#!/bin/bash
 set -e
 
-export NAME="${NAME:-p4depot}"
+if [ $# -eq 0 ] || [ "$1" = /usr/sbin/init ]; then
+    export NAME="${NAME:-p4depot}"
+    bash /usr/local/bin/setup-perforce.sh
+    sleep 2
+    exec /usr/sbin/init
+fi
 
-bash /usr/local/bin/setup-perforce.sh
-
-sleep 2
-
-exec /usr/bin/tail --pid=$(cat /var/run/p4d.$NAME.pid) -F "$DATAVOLUME/$NAME/logs/log"
+# Assume user just wants to run an ad-hoc command like bash
+exec "$@"

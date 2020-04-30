@@ -6,7 +6,7 @@ all: image
 DOCKER_REPO ?= ambakshi
 IMAGES=perforce-base perforce-proxy perforce-server perforce-git-fusion \
 	   perforce-swarm perforce-sampledepot perforce-p4web
-DOCKER_BUILD_ARGS = --build-arg http_proxy=$(http_proxy)
+DOCKER_BUILD_ARGS += --build-arg http_proxy=$(http_proxy)
 
 .PHONY:  $(IMAGES)
 
@@ -20,8 +20,7 @@ perforce-p4web: perforce-base
 
 rebuild:
 	$(MAKE) clean
-	docker pull centos:7
-	$(MAKE) all DOCKER_BUILD_ARGS='--no-cache'
+	$(MAKE) all CLEAN_ARGS='--no-cache'
 
 %/id_rsa.pub: id_rsa.pub
 	cp $< $@
@@ -42,7 +41,7 @@ clean: $(1)-clean
 $(1): $(1)/Dockerfile
 	@echo "===================="
 	@echo "Building $(DOCKER_REPO)/$(1) ..."
-	docker build -t $(DOCKER_REPO)/$(1) $(DOCKER_BUILD_ARGS) $(1)
+	docker build -t $(DOCKER_REPO)/$(1) $(DOCKER_BUILD_ARGS) $(CLEAN_ARGS) $(1)
 
 $(1)-clean:
 	-docker rmi $(DOCKER_REPO)/$(1) 2>/dev/null
@@ -50,4 +49,3 @@ $(1)-clean:
 endef
 
 $(foreach image,$(IMAGES),$(eval $(call DOCKER_build,$(image))))
-

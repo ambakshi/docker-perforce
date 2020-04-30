@@ -1,7 +1,9 @@
 FROM ambakshi/perforce-base
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
-RUN yum install -y helix-p4d helix-cli
+RUN yum install -y helix-p4d helix-cli \
+    && yum clean all --enablerepo='*' \
+    && rm -rf /var/cache/yum/*
 
 EXPOSE 1666
 ENV NAME p4depot
@@ -15,6 +17,6 @@ ADD ./p4-users.txt /root/
 ADD ./p4-groups.txt /root/
 ADD ./p4-protect.txt /root/
 ADD ./setup-perforce.sh /usr/local/bin/
-ADD ./run.sh  /
+ADD ./run.sh /
 
-CMD ["/run.sh"]
+ENTRYPOINT ["/run.sh"]
