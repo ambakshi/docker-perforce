@@ -1,7 +1,5 @@
-ARG CENTOS7=centos:7.7.1908
+ARG CENTOS7=centos:7
 FROM $CENTOS7
-
-ENV REFRESHED_AT 2020-04-30
 
 ENV container=docker
 
@@ -31,12 +29,16 @@ RUN rm -fv /etc/yum.repos.d/CentOS-{Vault,fasttrack,Media}.repo \
     && systemctl enable rsyslog \
     && echo 'NETWORKING=no' > /etc/sysconfig/network \
     && chkconfig network off \
+    && chkconfig --del network \
+    && : > /etc/machine-id \
     && yum clean all --enablerepo='*' \
     && rm -rf /var/cache/yum/*
 
 
+# Use http for the packages so it can be cached locally, but use https for the GPG key to ensure
+# the GPG key is authentic
 RUN echo -ne '[perforce]\nname=Perforce\nbaseurl=http://package.perforce.com/yum/rhel/7/x86_64\nenabled=1\ngpgcheck=1\n' > /etc/yum.repos.d/perforce.repo && \
-    rpm --import http://package.perforce.com/perforce.pubkey
+    rpm --import https://package.perforce.com/perforce.pubkey
 
 STOPSIGNAL SIGRTMIN+3
 

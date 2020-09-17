@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 if [ $# -eq 0 ] || [ "$1" = /usr/sbin/init ]; then
     export NAME="${NAME:-p4depot}"

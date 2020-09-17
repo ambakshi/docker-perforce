@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bash
+#!/bin/bash
 set -e
 
 export NAME="${NAME:-p4depot}"

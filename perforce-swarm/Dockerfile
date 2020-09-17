@@ -1,14 +1,17 @@
 FROM ambakshi/perforce-base
 MAINTAINER Amit Bakshi <ambakshi@gmail.com>
 
+ARG P4D_VERSION
+ENV P4D_VERSION=$P4D_VERSION
 
-RUN yum install -y centos-release-scl-rh \
-    && yum install -y helix-swarm helix-swarm-triggers httpd \
+RUN yum update -y \
+    && yum install -y centos-release-scl  \
+    && yum install -y sclo-php72-php-pecl-igbinary.x86_64 \
+    && yum install -y helix-swarm-${P4D_VERSION} helix-swarm-triggers httpd \
     && yum clean all \
     && rm -rf /var/cache/yum
 
 ## ** OPTIONAL **
-## RUN yum install -y php-pecl-imagick
 
 RUN for ii in rsyslog crond httpd; do systemctl enable $ii; done
 ENV P4PORT perforce:1666

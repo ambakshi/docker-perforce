@@ -1,29 +1,50 @@
 ---
 version: '3.7'
 
+x-systemd:
+  &default-systemd-service
+  tty: true
+  environment:
+    - container=docker
+  security_opt:
+    - seccomp=unconfined
+  cap_add:
+    - CAP_SYS_PTRACE
+    - CAP_IPC_LOCK
+  ulimits:
+    core:
+      soft: -1
+      hard: -1
+    nofile:
+      soft: '120000'
+      hard: '120000'
+  tmpfs:
+    - /run
+    - /run/lock
+  volumes:
+    - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  env_file:
+    - ./envfile
+  environment:
+    - P4D_VERSION=${P4D_VERSION:-2020.1}
+    - DOCKER_REPO=${DOCKER_REPO:-$USER}
+  networks:
+    - p4net
+
 services:
   perforce:
-    image: ambakshi/perforce-server:latest
+    <<: *default-systemd-service
+    image: ${DOCKER_REPO:-$USER}/perforce-server:${P4D_VERSION}
     container_name: perforce
     hostname: perforce
-    tty: true
     volumes:
       - p4depot:/data
-      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
     ports:
       - "1666:1666"
-    tmpfs:
-      - /run
-      - /run/lock
-    environment:
-      - container=docker
-    env_file:
-      - ./envfile
-    networks:
-      - p4net
 
   swarm:
-    image: ambakshi/perforce-swarm:latest
+    <<: *default-systemd-service
+    image: ${DOCKER_REPO:-$USER}/perforce-swarm:${P4D_VERSION}
     container_name: swarm
     hostname: swarm
     depends_on:
@@ -31,18 +52,8 @@ services:
     ports:
       - "8080:80"
       - "1443:443"
-    volumes:
-      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-    tmpfs:
-      - /run
-      - /run/lock
     environment:
       - P4PORT=perforce:1666
-      - container=docker
-    env_file:
-      - ./envfile
-    networks:
-      - p4net
 
 volumes:
   p4depot:
