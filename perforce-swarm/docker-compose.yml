@@ -1,0 +1,50 @@
+networks:
+  p4net:
+    external: true
+
+secrets:
+  p4passwd:
+    file: ../p4passwd.txt
+  swarm_passwd:
+    file: ../swarm_passwd.txt
+
+services:
+  swarm:
+    image: perforce-swarm
+    container_name: swarm
+    hostname: swarm
+    tmpfs:
+      - '/run'
+      - '/run/lock'
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    tty: true
+    security_opt:
+      - seccomp=unconfined
+    cap_add: [CAP_SYS_ADMIN, CAP_IPC_LOCK, CAP_DAC_OVERRIDE,CAP_SYS_PTRACE,CAP_SYSLOG,CAP_AUDIT_CONTROL,CAP_AUDIT_READ,CAP_CHOWN,CAP_DAC_READ_SEARCH,CAP_FOWNER,CAP_SETUID,CAP_SETGID,CAP_MAC_OVERRIDE,CAP_MKNOD]
+    env_file:
+      - ../envfile
+    domainname: home.lan
+    networks:
+      - p4net
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      container: "docker"
+      P4PORT: 'perforce:1666'
+      P4_PORT: "perforce:1666"
+      PATH: "/opt/perforce/swarm/p4-bin/bin.linux26x86_64:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      SWARM_HOST: "swarm.home.lan"
+      SWARM_USER: "swarm"
+      SWARM_PASSWD: "swarm"
+      P4USER: p4admin
+      P4CONFIG: .p4config
+      LANG: "en_US-UTF-8"
+    secrets:
+      - swarm_passwd
+      - p4passwd
+
+
+# vim: sts=2:ts=2:sw=2:et:ft=yaml:
+

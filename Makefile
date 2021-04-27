@@ -3,32 +3,36 @@ all: image
 
 -include local.mk
 
+include envfile
+
 DOCKER_REPO ?= ambakshi
 DOCKER ?= docker
-P4D_VERSION ?= 2020.1
-IMAGES=perforce-base perforce-proxy perforce-server perforce-git-fusion \
-	   perforce-swarm perforce-sampledepot perforce-p4web
+CENTOS8 = centos@sha256:5528e8b1b1719d34604c87e11dcd1c0a20bedf46e83b5632cdeac91b8c04efc1
+BASEOS = ubuntu@sha256:538529c9d229fb55f50e6746b119e899775205d62c0fc1b7e679b30d02ecb6e8
+
+IMAGES=perforce-proxy perforce-server perforce-sampledepot perforce-swarm perforce-p4web
 DOCKER_BUILD_ARGS += --build-arg http_proxy=$(http_proxy) \
 					 --build-arg https_proxy=$(https_proxy) \
 					 --build-arg no_proxy=$(no_proxy) \
-					 --build-arg P4D_VERSION=$(P4D_VERSION)
+					 --build-arg P4D_VERSION=$(P4D_VERSION) \
+					 --build-arg P4_VERSION=$(P4_VERSION) \
+					 --build-arg SWARM_VERSION=$(SWARM_VERSION) \
+					 --build-arg BASEOS=$(BASEOS)
 
 .PHONY:  $(IMAGES)
 
-perforce-proxy: perforce-base
-perforce-server: perforce-base
-perforce-proxy: perforce-base
-perforce-git-fusion: perforce-server
-perforce-sampledepot: perforce-server
-perforce-swarm: perforce-base
-perforce-p4web: perforce-base
+all: perforce-server perforce-sampledepot perforce-swarm
+
+perforce-proxy perforce-server perforce-sampledepot perforce-p4web perforce-swarm:
+	$(DOCKER) build --target $@ -t $@ $(DOCKER_BUILD_ARGS) .
+	$(DOCKER) tag $@ $@:$(P4D_VERSION)
 
 rebuild:
 	$(MAKE) clean
 	$(MAKE) all CLEAN_ARGS='--no-cache'
 
-%/id_rsa.pub: id_rsa.pub
-	cp $< $@
+clean:
+	$(DOCKER) rmi $(IMAGES)
 
 id_rsa:
 	ssh-keygen -q -f $@ -N ""
@@ -37,25 +41,4 @@ id_rsa.pub: id_rsa
 	ssh-keygen -y -f $< > $@
 
 network:
-	docker network create -d bridge --opt com.docker.network.bridge.enable_icc=true --opt com.docker.network.bridge.enable_ip_masquerade=true p4net
-
-define DOCKER_build
-
-.PHONY: $(1) $(1)-clean
-
-image: $(1)
-clean: $(1)-clean
-
-$(1): $(1)/Dockerfile
-	@echo "===================="
-	@echo "Building $(DOCKER_REPO)/$(1) ..."
-	$(DOCKER) build -t $(DOCKER_REPO)/$(1) $(DOCKER_BUILD_ARGS) $(CLEAN_ARGS) $(1)
-	$(DOCKER) tag $(DOCKER_REPO)/$(1) $(DOCKER_REPO)/$(1):$(P4D_VERSION)
-
-$(1)-clean:
-	-$(DOCKER) rmi $(DOCKER_REPO)/$(1):$(P4D_VERSION) 2>/dev/null
-	-$(DOCKER) rmi $(DOCKER_REPO)/$(1) 2>/dev/null
-
-endef
-
-$(foreach image,$(IMAGES),$(eval $(call DOCKER_build,$(image))))
+	$(DOCKER) network create -d bridge --opt com.docker.network.bridge.enable_icc=true --opt com.docker.network.bridge.enable_ip_masquerade=true p4net

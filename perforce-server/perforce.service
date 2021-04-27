@@ -1,0 +1,49 @@
+[Unit]
+Description=Perforce Server
+Documentation=https://perforce.com
+
+Wants=network.target
+After=network.target
+
+[Service]
+Type=simple
+
+User=perforce
+Group=perforce
+
+Environment=P4ROOT=/data/PerforceSample
+Environment=P4PORT=1666
+Environment=P4USER=p4admin
+Environment=P4AUDIT=/var/log/p4d/audit.log
+Environment=P4EXTRAFLAGS=
+Environment=PATH=/opt/perforce/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+EnvironmentFile=-/etc/default/perforce
+
+PermissionsStartOnly=true
+ExecStartPre=/bin/bash -x -e -c "if ! [ -d $P4ROOT ]; then mkdir -p $P4ROOT ; fi"
+ExecStartPre=/bin/bash -x -e -c "chmod 0700 $P4ROOT && chown perforce:perforce $P4ROOT"
+ExecStart=/opt/perforce/sbin/p4d $P4EXTRAFLAGS
+
+Restart=no
+
+KillMode=control-group
+KillSignal=SIGTERM
+SendSIGKILL=no
+TimeoutSec=0
+
+OOMScoreAdjust=-999
+
+RuntimeDirectory=perforce/p4d
+LogsDirectory=p4d
+WorkingDirectory=/
+
+TasksMax=infinity
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitMEMLOCK=infinity
+LimitCORE=infinity
+
+
+[Install]
+WantedBy=multi-user.target

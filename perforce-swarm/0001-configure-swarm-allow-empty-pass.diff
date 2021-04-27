@@ -1,0 +1,29 @@
+--- a/configure-swarm.sh	2021-05-11 09:44:09.765975651 -0700
++++ b/configure-swarm.sh	2021-05-11 09:47:28.279352667 -0700
+@@ -530,7 +530,7 @@
+     local ticket
+ 
+     echo "Obtaining Helix login ticket for [$user] in [$P4PORT]..."
+-    [[ -z "$passwd" ]] && echo "-no password specified" && return 1
++    [[ -z "${passwd+x}" ]] && echo "-no password specified" && return 1
+ 
+     # Check if password specified is a login ticket
+     if [[ "$passwd" =~ ^[0-9A-Z]{32}$ ]]; then
+@@ -1214,7 +1214,7 @@
+ Swarm base URL     [${BASE_URL:-($baseUrlDefault)}]
+ Create Swarm user? [$($CREATE && echo yes || echo no)]
+ Super user         [${SUPER_USER:-($notpassed)}]$supernote
+-Super password     [$([[ -n "$SUPER_PASSWD" ]] && echo "($passwd_there)" || echo "($notpassed)")]$supernote
++Super password     [$([[ -n "${SUPER_PASSWD+x}" ]] && echo "($passwd_there)" || echo "($notpassed)")]$supernote
+ 
+ __PREAMBLE__
+ }
+@@ -1283,7 +1283,7 @@
+ [[ $INTERACTIVE == 'false' && -z "$SWARM_PASSWD" ]] && usage_error "-w swarm-passwd required"
+ [[ $INTERACTIVE == 'false' && -z "$EMAIL_HOST" ]] && usage_error "-e email-host required"
+ [[ $INTERACTIVE == 'false' && $CREATE == 'true' && -z "$SUPER_USER" ]] && usage_error "Super user required"
+-[[ $INTERACTIVE == 'false' && $CREATE == 'true' && -z "$SUPER_PASSWD" ]] && usage_error "Super password required"
++[[ $INTERACTIVE == 'false' && $CREATE == 'true' && -z "${SUPER_PASSWD+x}" ]] && usage_error "Super password required"
+ 
+ # Fail if not running as root.
+ [[ "$(whoami)" == "root" ]] || die "Please run this script as root"

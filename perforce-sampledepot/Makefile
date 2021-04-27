@@ -7,7 +7,7 @@ HOST=perforce.localdomain
 all: build
 
 build:
-	docker build -t $(IMAGE) .
+	docker build -t $(IMAGE)
 
 push: build
 	docker push $(IMAGE)

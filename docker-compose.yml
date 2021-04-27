@@ -1,65 +1,90 @@
 ---
 version: '3.7'
 
+volumes:
+  p4depot:
+
+networks:
+  p4net:
+    external: true
+
+secrets:
+  p4passwd:
+    file: ./p4passwd.txt
+  swarm_passwd:
+    file: ./swarm_passwd.txt
+
+x-systemd-volumes:
+  &default-systemd-volumes
+  - &vol-run
+    type: tmpfs
+    target: /run
+    read_only: false
+  - &vol-lock
+    type: tmpfs
+    target: /run/lock
+    read_only: false
+  - &vol-cgroup
+    type: bind
+    source: /sys/fs/cgroup
+    target: /sys/fs/cgroup
+    read_only: true
+
 x-systemd:
   &default-systemd-service
   tty: true
-  environment:
-    - container=docker
   security_opt:
     - seccomp=unconfined
-  cap_add:
-    - CAP_SYS_PTRACE
-    - CAP_IPC_LOCK
-  ulimits:
-    core:
-      soft: -1
-      hard: -1
-    nofile:
-      soft: '120000'
-      hard: '120000'
-  tmpfs:
-    - /run
-    - /run/lock
-  volumes:
-    - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  cap_add: [CAP_SYS_ADMIN, CAP_IPC_LOCK, CAP_DAC_OVERRIDE,CAP_SYS_PTRACE,CAP_SYSLOG,CAP_AUDIT_CONTROL,CAP_AUDIT_READ,CAP_CHOWN,CAP_DAC_READ_SEARCH,CAP_FOWNER,CAP_SETUID,CAP_SETGID,CAP_MAC_OVERRIDE,CAP_MKNOD]
   env_file:
     - ./envfile
   environment:
-    - P4D_VERSION=${P4D_VERSION:-2020.1}
-    - DOCKER_REPO=${DOCKER_REPO:-$USER}
+    container: docker
+    P4PORT: 'perforce:1666'
+    P4USER: p4admin
+    P4CONFIG: .p4config
+    LANG: "en_US-UTF-8"
+  domainname: home.lan
   networks:
     - p4net
 
 services:
   perforce:
     <<: *default-systemd-service
-    image: ${DOCKER_REPO:-$USER}/perforce-server:${P4D_VERSION}
+    image: perforce-sampledepot
     container_name: perforce
     hostname: perforce
     volumes:
-      - p4depot:/data
+      - *vol-run
+      - *vol-lock
+      - *vol-cgroup
+      - type: volume
+        source: p4depot
+        target: /data
     ports:
       - "1666:1666"
+    environment:
+      P4ROOT: /data/PerforceSampleData
+      P4PORT: "1666"
 
   swarm:
     <<: *default-systemd-service
-    image: ${DOCKER_REPO:-$USER}/perforce-swarm:${P4D_VERSION}
+    image: perforce-swarm
     container_name: swarm
     hostname: swarm
     depends_on:
       - perforce
+    volumes: *default-systemd-volumes
     ports:
-      - "8080:80"
-      - "1443:443"
+      - "80:80"
+      - "443:443"
     environment:
-      - P4PORT=perforce:1666
-
-volumes:
-  p4depot:
-    external: true
-
-networks:
-  p4net:
-    external: true
+      container: "docker"
+      P4_PORT: "perforce:1666"
+      PATH: "/opt/perforce/swarm/p4-bin/bin.linux26x86_64:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      P4USER: bruno
+      P4PASSWD: bruno
+      SWARM_HOST: "swarm.home.lan"
+      SWARM_USER: "swarm"
+      SWARM_PASSWD: "swarm"
 # vim: sts=2:ts=2:sw=2:et:ft=yaml:

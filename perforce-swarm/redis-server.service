@@ -1,0 +1,28 @@
+[Unit]
+Description=Swarm redis server
+Wants=network.target
+After=network.target
+
+
+[Service]
+Type=simple
+
+User=perforce
+Group=perforce
+
+Environment=SWARM_REDIS_CONFIG=/opt/perforce/etc/redis-server.conf
+EnvironmentFile=-/etc/default/redis-server-swarm
+
+ExecStart=/opt/perforce/swarm/sbin/redis-server-swarm $SWARM_REDIS_CONFIG
+
+Restart=on-failure
+RestartSec=5
+
+LimitNOFILE=100000
+LimitNPROC=65000
+TasksMax=65000
+
+
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,3 @@
+P4ROOT=/data
+P4PORT=1666
+P4USER=p4admin

@@ -1,0 +1,47 @@
+---
+version: '3.7'
+
+networks:
+  p4net:
+    external: true
+
+secrets:
+  p4passwd:
+    file: ../p4passwd.txt
+
+volumes:
+  p4example:
+
+services:
+  perforce:
+    image: perforce-server
+    container_name: perforce
+    hostname: perforce
+    ports:
+      - "1666:1666"
+    secrets:
+      - p4passwd
+    tmpfs:
+      - '/run'
+      - '/run/lock'
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+      - 'p4example:/data'
+    tty: true
+    security_opt:
+      - seccomp=unconfined
+    cap_add: [CAP_SYS_ADMIN, CAP_IPC_LOCK, CAP_DAC_OVERRIDE,CAP_SYS_PTRACE,CAP_SYSLOG,CAP_AUDIT_CONTROL,CAP_AUDIT_READ,CAP_CHOWN,CAP_DAC_READ_SEARCH,CAP_FOWNER,CAP_SETUID,CAP_SETGID,CAP_MAC_OVERRIDE,CAP_MKNOD]
+    env_file:
+      - ../envfile
+    environment:
+      container: docker
+      P4ROOT: "/data/p4example"
+      P4PORT: "1666"
+      P4USER: p4admin
+      P4CONFIG: .p4config
+      LANG: "en_US-UTF-8"
+    domainname: home.lan
+    networks:
+      - p4net
+
+# vim: sts=2:ts=2:sw=2:et:ft=yaml:

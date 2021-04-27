@@ -1,0 +1,11 @@
+[Unit]
+Description=Helix swarm timer
+
+[Timer]
+OnCalendar= *-*-* *:*:00
+Persistent=true
+Unit=helix-swarm.service
+
+[Install]
+WantedBy=timers.target
+

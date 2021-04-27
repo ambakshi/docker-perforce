@@ -2,16 +2,35 @@
 
 set -e
 
-if [ ! -e /var/run/configure-swarm ]; then
-    /opt/perforce/swarm/sbin/configure-swarm.sh \
-        -p "$P4PORT" -u "$P4USER" -w "$P4PASSWD" \
-        -H $HOSTNAME -e "$MXHOST"
-    touch /var/run/configure-swarm
+if [ ! -e /run/lock/configure-swarm ]; then
+    if test -e /run/secrets/swarm_passwd; then
+        export SWARM_PASSWD=$(cat /run/secrets/swarm_passwd)
+    fi
+    if test -e /run/secrets/p4passwd; then
+        export P4PASSWD=$(cat /run/secrets/p4passwd)
+    fi
+    until nc -w1 ${P4PORT/:/ }; do
+        echo "waiting for perforce port be up at ${P4PORT/:/ }"
+        sleep 1
+    done
+    until p4 info 2>/dev/null; do
+        echo "waiting for perforce info be up at ${P4PORT/:/ }"
+        sleep 1
+    done
+    sleep 5
+    if ! test -e /run/lock/configure-swarm; then
+        /opt/perforce/swarm/sbin/configure-swarm.sh \
+            -n \
+            -p "$P4PORT" -u "$SWARM_USER" -w "$SWARM_PASSWD" \
+            -U "$P4USER" -W "$P4PASSWD" \
+            -c -g \
+            -H "$HOSTNAME" -e "$MXHOST"
+        touch /run/lock/configure-swarm
+    fi
+    systemctl enable apache2
+    apachectl stop || true
+    apachectl stop || true
+
 fi
-#systemctl enable httpd
-echo '<?php phpinfo(); ?>' > /opt/perforce/swarm/public/phpinfo.php
-#for i in `seq 20`; do
-#    test -e /var/run/httpd/httpd.pid && break
-#    sleep 2
-#done
-exec /usr/sbin/init
+
+exec /lib/systemd/systemd --system --log-target=journal

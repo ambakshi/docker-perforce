@@ -1,0 +1,13 @@
+[Unit]
+Description=Helix swarm timer cronjob
+ConditionFileIsExecutable=/opt/perforce/swarm/p4-bin/scripts/swarm-cron.sh
+
+[Service]
+Type=oneshot
+User=nobody
+Group=systemd-journal
+
+EnvironmentFile=-/etc/default/helix-timer
+EnvironmentFile=-/opt/perforce/etc/swarm-cron.conf
+
+ExecStart=/opt/perforce/swarm/p4-bin/scripts/swarm-cron.sh -f /opt/perforce/etc/swarm-cron-hosts.conf

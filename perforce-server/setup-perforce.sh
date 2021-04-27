@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -e +x
 export NAME="${NAME:-p4depot}"
 export CASE_INSENSITIVE="${CASE_INSENSITIVE:-0}"
 export P4ROOT="${DATAVOLUME}/${NAME}"
