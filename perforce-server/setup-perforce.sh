@@ -16,7 +16,7 @@ ln -s $DATAVOLUME/etc /etc/perforce
 
 UNICODE=""
 
-if [ "$USE_UNICODE" = "1" ]; then
+if [ "$USE_UNICODE" == "1" ]; then
     UNICODE="--unicode"
 fi
 
