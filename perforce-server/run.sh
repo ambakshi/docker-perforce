@@ -2,7 +2,7 @@
 set -e
 
 export NAME="${NAME:-p4depot}"
-export UNICODE="${UNICODE:0}"
+export UNICODE="${UNICODE:-0}"
 
 bash /usr/local/bin/setup-perforce.sh
 
