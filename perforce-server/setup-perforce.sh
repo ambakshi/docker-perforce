@@ -14,6 +14,12 @@ fi
 mv /etc/perforce /etc/perforce.orig
 ln -s $DATAVOLUME/etc /etc/perforce
 
+UNICODE=""
+
+if [ "$USE_UNICODE" == "1" ]; then
+    UNICODE="--unicode"
+fi
+
 if [ -z "$P4PASSWD" ]; then
     P4PASSWD="pass12349ers!"
 fi
@@ -27,7 +33,7 @@ for DIR in $P4ROOT $P4SSLDIR; do
 done
 
 if ! p4dctl list 2>/dev/null | grep -q $NAME; then
-    /opt/perforce/sbin/configure-helix-p4d.sh $NAME -n -p $P4PORT -r $P4ROOT -u $P4USER -P "${P4PASSWD}" --case $CASE_INSENSITIVE
+    /opt/perforce/sbin/configure-helix-p4d.sh $NAME -n -p $P4PORT -r $P4ROOT -u $P4USER -P "${P4PASSWD}" --case $CASE_INSENSITIVE $UNICODE
 fi
 
 p4dctl start -t p4d $NAME
